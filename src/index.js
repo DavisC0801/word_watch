@@ -15,18 +15,28 @@ class WordWatch{
     return document.createElement(element);
   }
 
+  renderError(errorMessage){
+    let errorFrame = document.getElementById('error-frame')
+    cleanup(errorFrame)
+    let errorText = createNode("h1")
+    errorText.innerHTML = errorMessage
+    errorFrame.appendChild(errorText);
+  }
+
   fetchTopWord(){
     fetch(`${this.apiAddress}/top_word`)
     .then((response) => response.json())
     .then((topWord) => {
-      this.renderTopWord(topWord["word"]);
+      this.renderTopWord(topWord["word"])
+    })
+    .catch(error => {
+      this.renderError(error)
     })
   }
 
   renderTopWord(word){
     let frame = document.getElementById('word-count-frame')
     this.cleanup(frame)
-    console.log(Object.keys(word)[0])
     let topWord = this.createNode("h3")
     topWord.innerHTML = "Current Top Word: " + Object.keys(word)[0]
     let topWordCount = this.createNode("h3")
@@ -39,5 +49,6 @@ class WordWatch{
 let wordWatch = new WordWatch()
 
 $(document).ready(() => {
+  wordWatch.cleanup(document.getElementById('error-frame'))
   wordWatch.fetchTopWord();
 })
