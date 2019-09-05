@@ -7,19 +7,21 @@
   </head>
   <body>
     <main>
-      <section id="error-frame"></section>
-      <section class="text-submission">
-        <h2 tabindex="0">Word <span>Watch</span> 👀</h2>
-        <textarea placeholder="Paste text here"></textarea>
-        <button>Break down</button>
-      </section>
+      <section id="message-frame"></section>
+      <section class="main-container">
+        <section class="text-submission">
+          <h2 tabindex="0">Word <span>Watch</span> 👀</h2>
+          <textarea placeholder="Paste text here" id="new-word-input"></textarea>
+          <button id="break-down-submit">Break down</button>
+        </section>
 
-      <section class="word-data" tabindex="0">
-        <article class="top-word">
-          <h3>Top word from Word Watch API: </h3>
-        </article>
-        <article class="word-count" tabindex="0" id="word-count-frame">
-        </article>
+        <section class="word-data" tabindex="0">
+          <article class="top-word">
+            <h3>Top word from Word Watch API: </h3>
+          </article>
+          <article class="word-count" tabindex="0" id="word-count-frame">
+          </article>
+        </section>
       </section>
     </main>
   </body>

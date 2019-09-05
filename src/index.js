@@ -15,40 +15,57 @@ class WordWatch{
     return document.createElement(element);
   }
 
-  renderError(errorMessage){
-    let errorFrame = document.getElementById('error-frame')
-    cleanup(errorFrame)
-    let errorText = createNode("h1")
-    errorText.innerHTML = errorMessage
-    errorFrame.appendChild(errorText);
+  renderMessage(newMessage){
+    let messageFrame = document.getElementById('message-frame')
+    this.cleanup(messageFrame)
+    let messageText = this.createNode("h1")
+    messageText.innerHTML = newMessage
+    messageFrame.appendChild(messageText);
   }
 
   fetchTopWord(){
     fetch(`${this.apiAddress}/top_word`)
-    .then((response) => response.json())
-    .then((topWord) => {
+    .then(response => response.json())
+    .then(topWord => {
       this.renderTopWord(topWord["word"])
     })
     .catch(error => {
-      this.renderError(error)
+      this.renderMessage(error)
     })
   }
 
   renderTopWord(word){
     let frame = document.getElementById('word-count-frame')
     this.cleanup(frame)
-    let topWord = this.createNode("h3")
-    topWord.innerHTML = "Current Top Word: " + Object.keys(word)[0]
-    let topWordCount = this.createNode("h3")
-    topWordCount.innerHTML = "Current Top Word Count: " + Object.values(word)[0]
+    let topWord = this.createNode("h2")
+    topWord.innerHTML = `Current Top Word: ${Object.keys(word)[0]} <br> Current Top Word Count: ${Object.values(word)[0]}`
     frame.appendChild(topWord)
-    frame.appendChild(topWordCount)
+  }
+
+  addNewWords(){
+    let wordField = document.getElementById('new-word-input')
+    let inputArray = wordField.value.split(" ")
+    inputArray.forEach(word => {
+      let trimmedWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+      fetch(`${this.apiAddress}/words`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({word: {value: trimmedWord.trim()}})
+      })
+      .then((response) => this.renderMessage("Words Successfully Added"))
+      .catch(error => {
+        this.renderMessage(error)
+      })
+    })
+    wordField.value = ''
+    this.fetchTopWord();
   }
 }
 
 let wordWatch = new WordWatch()
 
 $(document).ready(() => {
-  wordWatch.cleanup(document.getElementById('error-frame'))
   wordWatch.fetchTopWord();
+  let breakDownButton = document.getElementById('break-down-submit')
+  breakDownButton.addEventListener("click",  () => {wordWatch.addNewWords()});
 })
